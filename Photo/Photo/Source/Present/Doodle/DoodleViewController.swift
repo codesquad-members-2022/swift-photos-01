@@ -25,22 +25,14 @@ class DoodleViewController: UICollectionViewController {
         return flowLayout
     }
     
-    let navigationBarClose: UIButton = {
-        let barButton = UIButton()
-        barButton.setTitle("Close", for: .normal)
-        barButton.setTitleColor(.systemBlue, for: .normal)
-        barButton.titleLabel?.font = .systemFont(ofSize: 20)
-        return barButton
-    }()
-    
     private let doodleModel = DoodleModel()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         bind()
         attribute()
-        layout()
         
+        createNavigationButton()
         doodleModel.action.loadJson.accept(())
     }
     
@@ -48,24 +40,23 @@ class DoodleViewController: UICollectionViewController {
         doodleModel.state.loadedDoodles.sink(to: {
             self.collectionView.reloadData()
         })
-        
-        navigationBarClose.addAction(UIAction{ _ in
-            self.dismiss(animated: true, completion: nil)
-        }, for: .touchUpInside)
     }
     
     private func attribute() {
         self.title = "Doodle"
         self.view.backgroundColor = .white
         
-        self.collectionView.backgroundColor = .systemGray4
+        self.collectionView.backgroundColor = .systemGray2
         self.collectionView.translatesAutoresizingMaskIntoConstraints = false
-        self.collectionView.register(PhotosCollectionCell.self, forCellWithReuseIdentifier: Constants.cellIdentifier)
-        
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: navigationBarClose)
+        self.collectionView.register(DoodleCollectionCell.self, forCellWithReuseIdentifier: Constants.cellIdentifier)
     }
     
-    private func layout() {
+    private func createNavigationButton() {
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Close", style: .plain, target: self, action: #selector(closeButtonTapped))
+    }
+    @objc
+    private func closeButtonTapped() {
+        self.dismiss(animated: true, completion: nil)
     }
 }
 
@@ -75,7 +66,7 @@ extension DoodleViewController {
     }
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: Constants.cellIdentifier, for: indexPath) as? PhotosCollectionCell else {
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: Constants.cellIdentifier, for: indexPath) as? DoodleCollectionCell else {
             return UICollectionViewCell()
         }
         cell.backgroundColor = .random

@@ -46,7 +46,6 @@ class PhotosViewController: UIViewController {
         layout()
         
         photoModel.photo.action.fetchAssets.accept(())
-        photoModel.photo.action.loadJson.accept(())
     }
     
     private func bind() {
@@ -58,7 +57,7 @@ class PhotosViewController: UIViewController {
     }
     
     private func photoBind() {
-        photoModel.photo.state.fetchedAssets.sink(to: {
+        photoModel.photo.state.fetchedAssets.sink(to: { _ in
             self.collectionView.reloadData()
         })
         
@@ -73,7 +72,8 @@ class PhotosViewController: UIViewController {
     
     private func navigationBind() {
         navigationBarAdd.addAction(UIAction{ _ in
-            let rootViewcontroller = UINavigationController(rootViewController: DoodleViewController(collectionViewLayout: DoodleViewController.flowLayout))
+            let doodleViewController = DoodleViewController(collectionViewLayout: DoodleViewController.flowLayout)
+            let rootViewcontroller = UINavigationController(rootViewController: doodleViewController)
             rootViewcontroller.modalPresentationStyle = .fullScreen
             self.navigationController?.present(rootViewcontroller, animated: true)
         }, for: .touchUpInside)

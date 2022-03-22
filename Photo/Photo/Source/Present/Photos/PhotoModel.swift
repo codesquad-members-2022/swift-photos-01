@@ -14,11 +14,10 @@ class PhotoModel {
         struct Action {
             let fetchAssets = Publish<Void>()
             let loadImage = Publish<(Int, CGSize)>()
-            let loadJson = Publish<Void>()
         }
         
         struct State {
-            let fetchedAssets = Publish<Void>()
+            let fetchedAssets = Behavior<PHFetchResult<PHAsset>?>(value: nil)
             let loadedImage = Publish<(Int, UIImage?)>()
         }
         
@@ -28,10 +27,8 @@ class PhotoModel {
     
     let photo = Photo()
     
-    private var photoAsset: PHFetchResult<PHAsset>?
-    
     var count: Int {
-        guard let asset = self.photoAsset else {
+        guard let asset = self.photo.state.fetchedAssets.value else {
             return 0
         }
         return asset.count
@@ -39,12 +36,12 @@ class PhotoModel {
     
     init() {
         photo.action.fetchAssets.sink(to: {
-            self.photoAsset = PHAsset.fetchAssets(with: nil)
-            self.photo.state.fetchedAssets.accept(())
+            let photoAsset = PHAsset.fetchAssets(with: nil)
+            self.photo.state.fetchedAssets.accept(photoAsset)
         })
         
         photo.action.loadImage.sink(to: { index, size in
-            guard let photoAsset = self.photoAsset,
+            guard let photoAsset = self.photo.state.fetchedAssets.value,
                   index < photoAsset.count else {
                 return
             }
