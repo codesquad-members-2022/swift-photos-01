@@ -57,6 +57,7 @@ class PhotosViewController: UIViewController {
     
     private func attribute() {
         self.title = "Photos"
+        self.view.backgroundColor = .white
     }
     
     private func layout() {
