@@ -9,7 +9,12 @@ import Foundation
 
 struct Doodle: Decodable {
     let title: String
-    let image: URL
+    let imageUrl: URL
     let date: String
+    
+    enum CodingKeys: String, CodingKey {
+        case title, date
+        case imageUrl = "image"
+    }
 }
 

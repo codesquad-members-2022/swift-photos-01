@@ -40,6 +40,15 @@ class DoodleViewController: UICollectionViewController {
         doodleModel.state.loadedDoodles.sink(to: {
             self.collectionView.reloadData()
         })
+        
+        doodleModel.state.loadedImage.sink(to: { index, image in
+            DispatchQueue.main.async {
+                guard let cell = self.collectionView.cellForItem(at: IndexPath(row: index, section: 0)) as? DoodleCollectionCell else {
+                    return
+                }
+                cell.setImage(image)
+            }
+        })
     }
     
     private func attribute() {
@@ -70,8 +79,8 @@ extension DoodleViewController {
             return UICollectionViewCell()
         }
         cell.backgroundColor = .random
-//        cell.setImage(nil)
-//        self.photoModel.photo.action.loadImage.accept((indexPath.item, Constants.collectionCellSize))
+        cell.setImage(nil)
+        self.doodleModel.action.loadImage.accept(indexPath.item)
         return cell
     }
 }
