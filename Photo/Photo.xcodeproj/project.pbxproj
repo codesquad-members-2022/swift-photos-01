@@ -24,6 +24,7 @@
 		E0E21F4A27E9AE9200FDA449 /* DoodleModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0E21F4927E9AE9200FDA449 /* DoodleModel.swift */; };
 		E0E21F4C27E9DF3B00FDA449 /* Behavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0E21F4B27E9DF3B00FDA449 /* Behavior.swift */; };
 		E0E21F4E27E9E1D200FDA449 /* DoodleCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0E21F4D27E9E1D200FDA449 /* DoodleCollectionCell.swift */; };
+		E0E21F5227EAB9F700FDA449 /* Toast.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0E21F5127EAB9F700FDA449 /* Toast.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -46,6 +47,7 @@
 		E0E21F4927E9AE9200FDA449 /* DoodleModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DoodleModel.swift; sourceTree = "<group>"; };
 		E0E21F4B27E9DF3B00FDA449 /* Behavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Behavior.swift; sourceTree = "<group>"; };
 		E0E21F4D27E9E1D200FDA449 /* DoodleCollectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DoodleCollectionCell.swift; sourceTree = "<group>"; };
+		E0E21F5127EAB9F700FDA449 /* Toast.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Toast.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -155,8 +157,8 @@
 		E0E21F3A27E9661300FDA449 /* Common */ = {
 			isa = PBXGroup;
 			children = (
-				E0E21F3B27E9662E00FDA449 /* Publish.swift */,
-				E0E21F4B27E9DF3B00FDA449 /* Behavior.swift */,
+				E0E21F5027EAB9EF00FDA449 /* Toast */,
+				E0E21F4F27EAB9E400FDA449 /* Combine */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -194,6 +196,23 @@
 				E0E21F4D27E9E1D200FDA449 /* DoodleCollectionCell.swift */,
 			);
 			path = View;
+			sourceTree = "<group>";
+		};
+		E0E21F4F27EAB9E400FDA449 /* Combine */ = {
+			isa = PBXGroup;
+			children = (
+				E0E21F3B27E9662E00FDA449 /* Publish.swift */,
+				E0E21F4B27E9DF3B00FDA449 /* Behavior.swift */,
+			);
+			path = Combine;
+			sourceTree = "<group>";
+		};
+		E0E21F5027EAB9EF00FDA449 /* Toast */ = {
+			isa = PBXGroup;
+			children = (
+				E0E21F5127EAB9F700FDA449 /* Toast.swift */,
+			);
+			path = Toast;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -281,6 +300,7 @@
 				E0E21F4C27E9DF3B00FDA449 /* Behavior.swift in Sources */,
 				E0E21F3C27E9662E00FDA449 /* Publish.swift in Sources */,
 				E0E21F4727E9ABC000FDA449 /* DoodleViewController.swift in Sources */,
+				E0E21F5227EAB9F700FDA449 /* Toast.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

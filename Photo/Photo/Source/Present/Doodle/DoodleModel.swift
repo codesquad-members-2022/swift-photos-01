@@ -7,16 +7,19 @@
 
 import Foundation
 import UIKit
+import Photos
 
 class DoodleModel {
     struct Action {
         let loadJson = Publish<Void>()
         let loadImage = Publish<Int>()
+        let saveImage = Publish<Int>()
     }
     
     struct State {
         let loadedDoodles = Publish<Void>()
         let loadedImage = Publish<(Int, UIImage?)>()
+        let savedImage = Publish<String>()
     }
     
     let action = Action()
@@ -59,7 +62,21 @@ class DoodleModel {
                 self.state.loadedImage.accept((index, image))
                 self.imageCache.setObject(image, forKey: doodle.title as NSString)
             }
+        })
+        
+        action.saveImage.sink(to: { index in
+            let doodle = self.doodles[index]
+            guard let image = self.imageCache.object(forKey: doodle.title as NSString) else {
+                return
+            }
             
+            PHPhotoLibrary.shared().performChanges({
+                PHAssetChangeRequest.creationRequestForAsset(from: image)
+            }) { isSuccess, error in
+                if isSuccess {
+                    self.state.savedImage.accept("이미지를 저장했습니다")
+                }
+            }
         })
     }
 }

@@ -10,43 +10,41 @@ import Photos
 import UIKit
 
 class PhotoModel {
-    struct Photo {
-        struct Action {
-            let fetchAssets = Publish<Void>()
-            let loadImage = Publish<(Int, CGSize)>()
-        }
-        
-        struct State {
-            let fetchedAssets = Behavior<PHFetchResult<PHAsset>?>(value: nil)
-            let loadedImage = Publish<(Int, UIImage?)>()
-        }
-        
-        let action = Action()
-        let state = State()
+    struct Action {
+        let fetchAssets = Publish<Void>()
+        let loadImage = Publish<(Int, CGSize)>()
     }
     
-    let photo = Photo()
+    struct State {
+        let fetchedAssets = Publish<Void>()
+        let loadedImage = Publish<(Int, UIImage?)>()
+    }
+    
+    let action = Action()
+    let state = State()
+    
+    private var phAsset: PHFetchResult<PHAsset>?
     
     var count: Int {
-        guard let asset = self.photo.state.fetchedAssets.value else {
+        guard let count = self.phAsset?.count else {
             return 0
         }
-        return asset.count
+        return count
     }
     
     init() {
-        photo.action.fetchAssets.sink(to: {
-            let photoAsset = PHAsset.fetchAssets(with: nil)
-            self.photo.state.fetchedAssets.accept(photoAsset)
+        action.fetchAssets.sink(to: {
+            self.phAsset = PHAsset.fetchAssets(with: nil)
+            self.state.fetchedAssets.accept(())
         })
         
-        photo.action.loadImage.sink(to: { index, size in
-            guard let photoAsset = self.photo.state.fetchedAssets.value,
+        action.loadImage.sink(to: { index, size in
+            guard let photoAsset = self.phAsset,
                   index < photoAsset.count else {
                 return
             }
             PHCachingImageManager.default().requestImage(for: photoAsset[index], targetSize: size, contentMode: .aspectFill, options: nil) { image, _ in
-                self.photo.state.loadedImage.accept((index, image))
+                self.state.loadedImage.accept((index, image))
             }
         })
     }

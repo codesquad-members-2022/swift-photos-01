@@ -45,7 +45,7 @@ class PhotosViewController: UIViewController {
         attribute()
         layout()
         
-        photoModel.photo.action.fetchAssets.accept(())
+        photoModel.action.fetchAssets.accept(())
     }
     
     private func bind() {
@@ -57,11 +57,13 @@ class PhotosViewController: UIViewController {
     }
     
     private func photoBind() {
-        photoModel.photo.state.fetchedAssets.sink(to: { _ in
-            self.collectionView.reloadData()
+        photoModel.state.fetchedAssets.sink(to: { _ in
+            DispatchQueue.main.async {
+                self.collectionView.reloadData()                
+            }
         })
         
-        photoModel.photo.state.loadedImage.sink(to: { index, image in
+        photoModel.state.loadedImage.sink(to: { index, image in
             guard let cell = self.collectionView.cellForItem(at: IndexPath(row: index, section: 0)) as? PhotosCollectionCell else {
                 return
             }
@@ -110,13 +112,13 @@ extension PhotosViewController: UICollectionViewDataSource {
         }
         cell.backgroundColor = .random
         cell.setImage(nil)
-        self.photoModel.photo.action.loadImage.accept((indexPath.item, Constants.collectionCellSize))
+        self.photoModel.action.loadImage.accept((indexPath.item, Constants.collectionCellSize))
         return cell
     }
 }
 
 extension PhotosViewController: PHPhotoLibraryChangeObserver {
     func photoLibraryDidChange(_ changeInstance: PHChange) {
-        
+        self.photoModel.action.fetchAssets.accept(())
     }
 }

@@ -36,6 +36,16 @@ class DoodleViewController: UICollectionViewController {
         doodleModel.action.loadJson.accept(())
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        self.navigationController?.view.backgroundColor = .systemGray6
+        self.navigationController?.navigationBar.backgroundColor = .systemGray6
+        self.navigationController?.navigationBar.barTintColor = .systemGray6
+        self.navigationController?.navigationBar.isTranslucent = false
+        
+    }
+    
     private func bind() {
         doodleModel.state.loadedDoodles.sink(to: {
             self.collectionView.reloadData()
@@ -47,6 +57,12 @@ class DoodleViewController: UICollectionViewController {
                     return
                 }
                 cell.setImage(image)
+            }
+        })
+        
+        doodleModel.state.savedImage.sink(to: { message in
+            DispatchQueue.main.async {
+                self.showToast(message: message)
             }
         })
     }
@@ -63,6 +79,7 @@ class DoodleViewController: UICollectionViewController {
     private func createNavigationButton() {
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Close", style: .plain, target: self, action: #selector(closeButtonTapped))
     }
+    
     @objc
     private func closeButtonTapped() {
         self.dismiss(animated: true, completion: nil)
@@ -79,8 +96,19 @@ extension DoodleViewController {
             return UICollectionViewCell()
         }
         cell.backgroundColor = .random
+        cell.delegate = self
         cell.setImage(nil)
         self.doodleModel.action.loadImage.accept(indexPath.item)
         return cell
+    }
+}
+
+extension DoodleViewController: DoodleCollectionCellDelegate {
+    func save(_ cell: DoodleCollectionCell) {
+        guard let indexPath = self.collectionView.indexPath(for: cell) else {
+            return
+        }
+        
+        self.doodleModel.action.saveImage.accept(indexPath.item)
     }
 }
