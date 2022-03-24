@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E006B2A827EC725300EF8E73 /* Bundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = E006B2A727EC725300EF8E73 /* Bundle.swift */; };
 		E0E21F1527E80E5F00FDA449 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0E21F1427E80E5F00FDA449 /* AppDelegate.swift */; };
 		E0E21F1727E80E5F00FDA449 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0E21F1627E80E5F00FDA449 /* SceneDelegate.swift */; };
 		E0E21F1927E80E5F00FDA449 /* PhotosViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0E21F1827E80E5F00FDA449 /* PhotosViewController.swift */; };
@@ -16,19 +17,20 @@
 		E0E21F3227E8786400FDA449 /* Color+Exteionsoin.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0E21F3127E8786400FDA449 /* Color+Exteionsoin.swift */; };
 		E0E21F3427E8799700FDA449 /* PhotoModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0E21F3327E8799700FDA449 /* PhotoModel.swift */; };
 		E0E21F3927E963E500FDA449 /* PhotosCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0E21F3827E963E500FDA449 /* PhotosCollectionCell.swift */; };
-		E0E21F3C27E9662E00FDA449 /* Publish.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0E21F3B27E9662E00FDA449 /* Publish.swift */; };
 		E0E21F4027E9A26300FDA449 /* Doodle.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0E21F3F27E9A26300FDA449 /* Doodle.swift */; };
 		E0E21F4227E9A6D000FDA449 /* doodle.json in Resources */ = {isa = PBXBuildFile; fileRef = E0E21F4127E9A6D000FDA449 /* doodle.json */; };
 		E0E21F4427E9A88100FDA449 /* Doodles.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0E21F4327E9A88100FDA449 /* Doodles.swift */; };
 		E0E21F4727E9ABC000FDA449 /* DoodleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0E21F4627E9ABC000FDA449 /* DoodleViewController.swift */; };
 		E0E21F4A27E9AE9200FDA449 /* DoodleModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0E21F4927E9AE9200FDA449 /* DoodleModel.swift */; };
-		E0E21F4C27E9DF3B00FDA449 /* Behavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0E21F4B27E9DF3B00FDA449 /* Behavior.swift */; };
 		E0E21F4E27E9E1D200FDA449 /* DoodleCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0E21F4D27E9E1D200FDA449 /* DoodleCollectionCell.swift */; };
 		E0E21F5227EAB9F700FDA449 /* Toast.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0E21F5127EAB9F700FDA449 /* Toast.swift */; };
-		E0FA8BFA27EB1489000E6A44 /* Permission.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0FA8BF927EB1489000E6A44 /* Permission.swift */; };
+		E0FA8C0027EC3719000E6A44 /* PHPhoto.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0FA8BFF27EC3719000E6A44 /* PHPhoto.swift */; };
+		E0FA8C0327EC54C2000E6A44 /* JsonParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0FA8C0227EC54C2000E6A44 /* JsonParser.swift */; };
+		E0FA8C0527EC57D9000E6A44 /* URLSession+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0FA8C0427EC57D9000E6A44 /* URLSession+Extension.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		E006B2A727EC725300EF8E73 /* Bundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Bundle.swift; sourceTree = "<group>"; };
 		E0E21F1127E80E5F00FDA449 /* Photo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Photo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E0E21F1427E80E5F00FDA449 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		E0E21F1627E80E5F00FDA449 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -40,16 +42,16 @@
 		E0E21F3127E8786400FDA449 /* Color+Exteionsoin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Exteionsoin.swift"; sourceTree = "<group>"; };
 		E0E21F3327E8799700FDA449 /* PhotoModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoModel.swift; sourceTree = "<group>"; };
 		E0E21F3827E963E500FDA449 /* PhotosCollectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotosCollectionCell.swift; sourceTree = "<group>"; };
-		E0E21F3B27E9662E00FDA449 /* Publish.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Publish.swift; sourceTree = "<group>"; };
 		E0E21F3F27E9A26300FDA449 /* Doodle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Doodle.swift; sourceTree = "<group>"; };
 		E0E21F4127E9A6D000FDA449 /* doodle.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = doodle.json; sourceTree = "<group>"; };
 		E0E21F4327E9A88100FDA449 /* Doodles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Doodles.swift; sourceTree = "<group>"; };
 		E0E21F4627E9ABC000FDA449 /* DoodleViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DoodleViewController.swift; sourceTree = "<group>"; };
 		E0E21F4927E9AE9200FDA449 /* DoodleModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DoodleModel.swift; sourceTree = "<group>"; };
-		E0E21F4B27E9DF3B00FDA449 /* Behavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Behavior.swift; sourceTree = "<group>"; };
 		E0E21F4D27E9E1D200FDA449 /* DoodleCollectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DoodleCollectionCell.swift; sourceTree = "<group>"; };
 		E0E21F5127EAB9F700FDA449 /* Toast.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Toast.swift; sourceTree = "<group>"; };
-		E0FA8BF927EB1489000E6A44 /* Permission.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Permission.swift; sourceTree = "<group>"; };
+		E0FA8BFF27EC3719000E6A44 /* PHPhoto.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PHPhoto.swift; sourceTree = "<group>"; };
+		E0FA8C0227EC54C2000E6A44 /* JsonParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JsonParser.swift; sourceTree = "<group>"; };
+		E0FA8C0427EC57D9000E6A44 /* URLSession+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URLSession+Extension.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -125,6 +127,8 @@
 			isa = PBXGroup;
 			children = (
 				E0E21F3127E8786400FDA449 /* Color+Exteionsoin.swift */,
+				E0FA8C0427EC57D9000E6A44 /* URLSession+Extension.swift */,
+				E006B2A727EC725300EF8E73 /* Bundle.swift */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -159,9 +163,9 @@
 		E0E21F3A27E9661300FDA449 /* Common */ = {
 			isa = PBXGroup;
 			children = (
-				E0FA8BF827EB1481000E6A44 /* Permission */,
+				E0FA8C0127EC54AD000E6A44 /* JsonParser */,
+				E0FA8BFE27EC36ED000E6A44 /* PHPhoto */,
 				E0E21F5027EAB9EF00FDA449 /* Toast */,
-				E0E21F4F27EAB9E400FDA449 /* Combine */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -201,15 +205,6 @@
 			path = View;
 			sourceTree = "<group>";
 		};
-		E0E21F4F27EAB9E400FDA449 /* Combine */ = {
-			isa = PBXGroup;
-			children = (
-				E0E21F3B27E9662E00FDA449 /* Publish.swift */,
-				E0E21F4B27E9DF3B00FDA449 /* Behavior.swift */,
-			);
-			path = Combine;
-			sourceTree = "<group>";
-		};
 		E0E21F5027EAB9EF00FDA449 /* Toast */ = {
 			isa = PBXGroup;
 			children = (
@@ -218,12 +213,20 @@
 			path = Toast;
 			sourceTree = "<group>";
 		};
-		E0FA8BF827EB1481000E6A44 /* Permission */ = {
+		E0FA8BFE27EC36ED000E6A44 /* PHPhoto */ = {
 			isa = PBXGroup;
 			children = (
-				E0FA8BF927EB1489000E6A44 /* Permission.swift */,
+				E0FA8BFF27EC3719000E6A44 /* PHPhoto.swift */,
 			);
-			path = Permission;
+			path = PHPhoto;
+			sourceTree = "<group>";
+		};
+		E0FA8C0127EC54AD000E6A44 /* JsonParser */ = {
+			isa = PBXGroup;
+			children = (
+				E0FA8C0227EC54C2000E6A44 /* JsonParser.swift */,
+			);
+			path = JsonParser;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -299,20 +302,21 @@
 			buildActionMask = 2147483647;
 			files = (
 				E0E21F4A27E9AE9200FDA449 /* DoodleModel.swift in Sources */,
+				E006B2A827EC725300EF8E73 /* Bundle.swift in Sources */,
 				E0E21F3427E8799700FDA449 /* PhotoModel.swift in Sources */,
 				E0E21F1927E80E5F00FDA449 /* PhotosViewController.swift in Sources */,
 				E0E21F3927E963E500FDA449 /* PhotosCollectionCell.swift in Sources */,
+				E0FA8C0527EC57D9000E6A44 /* URLSession+Extension.swift in Sources */,
 				E0E21F3227E8786400FDA449 /* Color+Exteionsoin.swift in Sources */,
 				E0E21F4427E9A88100FDA449 /* Doodles.swift in Sources */,
 				E0E21F1527E80E5F00FDA449 /* AppDelegate.swift in Sources */,
+				E0FA8C0027EC3719000E6A44 /* PHPhoto.swift in Sources */,
 				E0E21F1727E80E5F00FDA449 /* SceneDelegate.swift in Sources */,
 				E0E21F4E27E9E1D200FDA449 /* DoodleCollectionCell.swift in Sources */,
+				E0FA8C0327EC54C2000E6A44 /* JsonParser.swift in Sources */,
 				E0E21F4027E9A26300FDA449 /* Doodle.swift in Sources */,
-				E0E21F4C27E9DF3B00FDA449 /* Behavior.swift in Sources */,
-				E0E21F3C27E9662E00FDA449 /* Publish.swift in Sources */,
 				E0E21F4727E9ABC000FDA449 /* DoodleViewController.swift in Sources */,
 				E0E21F5227EAB9F700FDA449 /* Toast.swift in Sources */,
-				E0FA8BFA27EB1489000E6A44 /* Permission.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

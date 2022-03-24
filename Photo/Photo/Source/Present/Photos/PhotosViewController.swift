@@ -8,6 +8,7 @@
 import Foundation
 import UIKit
 import Photos
+import Combine
 
 class PhotosViewController: UIViewController {
     enum Constants {
@@ -37,6 +38,7 @@ class PhotosViewController: UIViewController {
         return barButton
     }()
     
+    var cancellables = [AnyCancellable]()
     private let photoModel = PhotoModel()
     
     override func viewDidLoad() {
@@ -45,9 +47,14 @@ class PhotosViewController: UIViewController {
         attribute()
         layout()
         
-        Permission.PHPhotoLibraryAuthorization {
-            PHPhotoLibrary.shared().register(self)
-            self.photoModel.action.fetchAssets.accept(())
+        PHPhoto.authorization { result in
+            switch result {
+            case .success(()):
+                PHPhotoLibrary.shared().register(self)
+                self.photoModel.action.fetchAssets.send()
+            case .failure(let error):
+                exit(0)
+            }
         }
     }
     
@@ -58,19 +65,21 @@ class PhotosViewController: UIViewController {
     }
     
     private func photoBind() {
-        photoModel.state.fetchedAssets.sink(to: { _ in
-            DispatchQueue.main.async {
-                self.collectionView.reloadData()                
-            }
-        })
-        
-        photoModel.state.loadedImage.sink(to: { index, image in
-            guard let cell = self.collectionView.cellForItem(at: IndexPath(row: index, section: 0)) as? PhotosCollectionCell else {
-                return
-            }
-            
-            cell.setImage(image)
-        })
+        photoModel.state.fetchedAssets
+            .sink { _ in
+                DispatchQueue.main.async {
+                    self.collectionView.reloadData()
+                }
+            }.store(in: &cancellables)
+
+        photoModel.state.loadedImage
+            .sink { index, image in
+                guard let cell = self.collectionView.cellForItem(at: IndexPath(row: index, section: 0)) as?
+                        PhotosCollectionCell else {
+                            return
+                        }
+                cell.setImage(image)
+            }.store(in: &cancellables)
     }
     
     private func navigationBind() {
@@ -104,23 +113,23 @@ class PhotosViewController: UIViewController {
 
 extension PhotosViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        self.photoModel.count
+        self.photoModel.state.fetchedAssets.value?.count ?? 0
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: Constants.cellIdentifier, for: indexPath) as? PhotosCollectionCell else {
             return UICollectionViewCell()
         }
-        
+
         cell.backgroundColor = .random
         cell.setImage(nil)
-        self.photoModel.action.loadImage.accept((indexPath.item, Constants.collectionCellSize))
+        self.photoModel.action.loadImage.send((indexPath.item, Constants.collectionCellSize))
         return cell
     }
 }
 
 extension PhotosViewController: PHPhotoLibraryChangeObserver {
     func photoLibraryDidChange(_ changeInstance: PHChange) {
-        self.photoModel.action.fetchAssets.accept(())
+        self.photoModel.action.fetchAssets.send()
     }
 }

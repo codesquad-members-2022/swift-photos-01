@@ -8,44 +8,48 @@
 import Foundation
 import Photos
 import UIKit
+import Combine
 
 class PhotoModel {
+    
     struct Action {
-        let fetchAssets = Publish<Void>()
-        let loadImage = Publish<(Int, CGSize)>()
+        var fetchAssets = PassthroughSubject<Void, Never>()
+        var loadImage = PassthroughSubject<(Int, CGSize), Never>()
     }
     
     struct State {
-        let fetchedAssets = Publish<Void>()
-        let loadedImage = Publish<(Int, UIImage?)>()
+        var fetchedAssets = CurrentValueSubject<PHFetchResult<PHAsset>?, Never>(nil)
+        var loadedImage = PassthroughSubject<(Int, UIImage?), Never>()
     }
     
+    var cancellables = [AnyCancellable]()
     let action = Action()
     let state = State()
     
-    private var phAsset: PHFetchResult<PHAsset>?
-    
-    var count: Int {
-        guard let count = self.phAsset?.count else {
-            return 0
-        }
-        return count
-    }
-    
     init() {
-        action.fetchAssets.sink(to: {
-            self.phAsset = PHAsset.fetchAssets(with: nil)
-            self.state.fetchedAssets.accept(())
-        })
+        action.fetchAssets
+            .sink { _ in
+                let phAsset = PHPhoto.fetchAsset()
+                self.state.fetchedAssets.send(phAsset)
+            }
+            .store(in: &cancellables)
         
-        action.loadImage.sink(to: { index, size in
-            guard let photoAsset = self.phAsset,
-                  index < photoAsset.count else {
-                return
-            }
-            PHCachingImageManager.default().requestImage(for: photoAsset[index], targetSize: size, contentMode: .aspectFill, options: nil) { image, _ in
-                self.state.loadedImage.accept((index, image))
-            }
-        })
+        action.loadImage
+            .combineLatest(state.fetchedAssets)
+            .sink { loadData, phAsset in
+                guard let photoAsset = phAsset,
+                      loadData.0 < photoAsset.count else {
+                          return
+                      }
+                
+                PHPhoto.requestImage(for: photoAsset[loadData.0], targetSize: loadData.1, contentMode: .aspectFill) { result in
+                    switch result {
+                    case .success(let image):
+                        self.state.loadedImage.send((loadData.0, image))
+                    case .failure(let error):
+                        break
+                    }
+                }
+            }.store(in: &cancellables)
     }
 }

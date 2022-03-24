@@ -7,6 +7,7 @@
 
 import Foundation
 import UIKit
+import Combine
 
 class DoodleViewController: UICollectionViewController {
     enum Constants {
@@ -21,10 +22,10 @@ class DoodleViewController: UICollectionViewController {
         flowLayout.itemSize = Constants.collectionCellSize
         flowLayout.minimumLineSpacing = Constants.minimumLineSpacing
         flowLayout.minimumInteritemSpacing = Constants.minimumInteritemSpacing
-        
         return flowLayout
     }
     
+    var cancellables = [AnyCancellable]()
     private let doodleModel = DoodleModel()
     
     override func viewDidLoad() {
@@ -33,7 +34,7 @@ class DoodleViewController: UICollectionViewController {
         attribute()
         
         createNavigationButton()
-        doodleModel.action.loadJson.accept(())
+        doodleModel.action.loadJson.send()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -47,24 +48,28 @@ class DoodleViewController: UICollectionViewController {
     }
     
     private func bind() {
-        doodleModel.state.loadedDoodles.sink(to: {
-            self.collectionView.reloadData()
-        })
-        
-        doodleModel.state.loadedImage.sink(to: { index, image in
-            DispatchQueue.main.async {
-                guard let cell = self.collectionView.cellForItem(at: IndexPath(row: index, section: 0)) as? DoodleCollectionCell else {
-                    return
+        doodleModel.state.loadedDoodles
+            .sink {
+                self.collectionView.reloadData()
+            }.store(in: &cancellables)
+
+        doodleModel.state.loadedImage
+            .sink { index, image in
+                DispatchQueue.main.async {
+                    guard let cell = self.collectionView.cellForItem(at: IndexPath(row: index, section: 0)) as?
+                            DoodleCollectionCell else {
+                                return
+                            }
+                    cell.setImage(image)
                 }
-                cell.setImage(image)
-            }
-        })
-        
-        doodleModel.state.savedImage.sink(to: { message in
-            DispatchQueue.main.async {
-                self.showToast(message: message)
-            }
-        })
+            }.store(in: &cancellables)
+
+        doodleModel.state.savedImage
+            .sink { message in
+                DispatchQueue.main.async {
+                    self.showToast(message: message)
+                }
+            }.store(in: &cancellables)
     }
     
     private func attribute() {
@@ -88,7 +93,7 @@ class DoodleViewController: UICollectionViewController {
 
 extension DoodleViewController {
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return self.doodleModel.count
+        self.doodleModel.count
     }
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -98,7 +103,7 @@ extension DoodleViewController {
         cell.backgroundColor = .random
         cell.delegate = self
         cell.setImage(nil)
-        self.doodleModel.action.loadImage.accept(indexPath.item)
+        self.doodleModel.action.loadImage.send(indexPath.item)
         return cell
     }
 }
@@ -108,7 +113,7 @@ extension DoodleViewController: DoodleCollectionCellDelegate {
         guard let indexPath = self.collectionView.indexPath(for: cell) else {
             return
         }
-        
-        self.doodleModel.action.saveImage.accept(indexPath.item)
+
+        self.doodleModel.action.saveImage.send(indexPath.item)
     }
 }
