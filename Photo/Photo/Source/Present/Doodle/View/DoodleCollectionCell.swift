@@ -19,49 +19,60 @@ class DoodleCollectionCell: UICollectionViewCell {
         return imageView
     }()
     
-    var delegate: DoodleCollectionCellDelegate?
+    override var canBecomeFirstResponder: Bool {
+        true
+    }
     
-    private let cellButton: UIButton = {
-        let button = UIButton()
-        button.translatesAutoresizingMaskIntoConstraints = false
-        return button
-    }()
+    var delegate: DoodleCollectionCellDelegate?
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         bind()
         layout()
+        
+        self.isUserInteractionEnabled = true
     }
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
         bind()
         layout()
+        self.isUserInteractionEnabled = true
     }
     
     private func bind() {
-        let menu = UIMenu(title: "", image: nil, identifier: nil, options: .displayInline, children: [
-            UIAction(title: "Save", image: nil) { _ in
-                self.delegate?.save(self)
-            }
-        ])
+        let longPressGestureRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(targetViewDidPress))
+        longPressGestureRecognizer.minimumPressDuration = 1
+        self.addGestureRecognizer(longPressGestureRecognizer)
+    }
+    
+    @objc
+    private func targetViewDidPress(sender: UILongPressGestureRecognizer) {
+        guard sender.state == .began,
+              let senderView = sender.view,
+              let superView = sender.view?.superview else {
+                  return
+              }
         
-        cellButton.menu = menu
+        senderView.becomeFirstResponder()
+        let saveMenuItem = UIMenuItem(title: "Save", action: #selector(SaveMenuItemTapped))
+        UIMenuController.shared.menuItems = [saveMenuItem]
+        UIMenuController.shared.showMenu(from: superView, rect: senderView.frame)
+        
+    }
+    
+    @objc
+    private func SaveMenuItemTapped() {
+        self.delegate?.save(self)
     }
     
     private func layout() {
         self.addSubview(imageView)
-        self.addSubview(cellButton)
         
         imageView.topAnchor.constraint(equalTo: self.topAnchor).isActive = true
         imageView.bottomAnchor.constraint(equalTo: self.bottomAnchor).isActive = true
         imageView.leftAnchor.constraint(equalTo: self.leftAnchor).isActive = true
         imageView.rightAnchor.constraint(equalTo: self.rightAnchor).isActive = true
-        
-        cellButton.topAnchor.constraint(equalTo: self.topAnchor).isActive = true
-        cellButton.bottomAnchor.constraint(equalTo: self.bottomAnchor).isActive = true
-        cellButton.leftAnchor.constraint(equalTo: self.leftAnchor).isActive = true
-        cellButton.rightAnchor.constraint(equalTo: self.rightAnchor).isActive = true
     }
     
     func setImage(_ image: UIImage?) {

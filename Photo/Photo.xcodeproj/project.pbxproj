@@ -25,6 +25,7 @@
 		E0E21F4C27E9DF3B00FDA449 /* Behavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0E21F4B27E9DF3B00FDA449 /* Behavior.swift */; };
 		E0E21F4E27E9E1D200FDA449 /* DoodleCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0E21F4D27E9E1D200FDA449 /* DoodleCollectionCell.swift */; };
 		E0E21F5227EAB9F700FDA449 /* Toast.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0E21F5127EAB9F700FDA449 /* Toast.swift */; };
+		E0FA8BFA27EB1489000E6A44 /* Permission.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0FA8BF927EB1489000E6A44 /* Permission.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -48,6 +49,7 @@
 		E0E21F4B27E9DF3B00FDA449 /* Behavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Behavior.swift; sourceTree = "<group>"; };
 		E0E21F4D27E9E1D200FDA449 /* DoodleCollectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DoodleCollectionCell.swift; sourceTree = "<group>"; };
 		E0E21F5127EAB9F700FDA449 /* Toast.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Toast.swift; sourceTree = "<group>"; };
+		E0FA8BF927EB1489000E6A44 /* Permission.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Permission.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -157,6 +159,7 @@
 		E0E21F3A27E9661300FDA449 /* Common */ = {
 			isa = PBXGroup;
 			children = (
+				E0FA8BF827EB1481000E6A44 /* Permission */,
 				E0E21F5027EAB9EF00FDA449 /* Toast */,
 				E0E21F4F27EAB9E400FDA449 /* Combine */,
 			);
@@ -213,6 +216,14 @@
 				E0E21F5127EAB9F700FDA449 /* Toast.swift */,
 			);
 			path = Toast;
+			sourceTree = "<group>";
+		};
+		E0FA8BF827EB1481000E6A44 /* Permission */ = {
+			isa = PBXGroup;
+			children = (
+				E0FA8BF927EB1489000E6A44 /* Permission.swift */,
+			);
+			path = Permission;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -301,6 +312,7 @@
 				E0E21F3C27E9662E00FDA449 /* Publish.swift in Sources */,
 				E0E21F4727E9ABC000FDA449 /* DoodleViewController.swift in Sources */,
 				E0E21F5227EAB9F700FDA449 /* Toast.swift in Sources */,
+				E0FA8BFA27EB1489000E6A44 /* Permission.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -451,6 +463,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Photo/Configuration/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "카메라도 사용할게여!";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "사진앱 사용할께여!";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
@@ -479,6 +492,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Photo/Configuration/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "카메라도 사용할게여!";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "사진앱 사용할께여!";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;

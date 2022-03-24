@@ -45,14 +45,15 @@ class PhotosViewController: UIViewController {
         attribute()
         layout()
         
-        photoModel.action.fetchAssets.accept(())
+        Permission.PHPhotoLibraryAuthorization {
+            PHPhotoLibrary.shared().register(self)
+            self.photoModel.action.fetchAssets.accept(())
+        }
     }
     
     private func bind() {
         photoBind()
         navigationBind()
-        
-        PHPhotoLibrary.shared().register(self)
         collectionView.dataSource = self
     }
     
@@ -110,6 +111,7 @@ extension PhotosViewController: UICollectionViewDataSource {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: Constants.cellIdentifier, for: indexPath) as? PhotosCollectionCell else {
             return UICollectionViewCell()
         }
+        
         cell.backgroundColor = .random
         cell.setImage(nil)
         self.photoModel.action.loadImage.accept((indexPath.item, Constants.collectionCellSize))
