@@ -74,11 +74,13 @@ class PhotosViewController: UIViewController {
 
         photoModel.state.loadedImage
             .sink { index, image in
-                guard let cell = self.collectionView.cellForItem(at: IndexPath(row: index, section: 0)) as?
-                        PhotosCollectionCell else {
-                            return
-                        }
-                cell.setImage(image)
+                DispatchQueue.main.async {
+                    guard let cell = self.collectionView.cellForItem(at: IndexPath(row: index, section: 0)) as?
+                            PhotosCollectionCell else {
+                                return
+                            }
+                    cell.setImage(image)                    
+                }
             }.store(in: &cancellables)
     }
     

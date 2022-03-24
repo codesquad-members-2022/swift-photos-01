@@ -29,15 +29,12 @@ class DoodleCollectionCell: UICollectionViewCell {
         super.init(frame: frame)
         bind()
         layout()
-        
-        self.isUserInteractionEnabled = true
     }
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
         bind()
         layout()
-        self.isUserInteractionEnabled = true
     }
     
     private func bind() {

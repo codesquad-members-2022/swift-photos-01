@@ -44,12 +44,11 @@ class DoodleViewController: UICollectionViewController {
         self.navigationController?.navigationBar.backgroundColor = .systemGray6
         self.navigationController?.navigationBar.barTintColor = .systemGray6
         self.navigationController?.navigationBar.isTranslucent = false
-        
     }
     
     private func bind() {
         doodleModel.state.loadedDoodles
-            .sink {
+            .sink { _ in
                 self.collectionView.reloadData()
             }.store(in: &cancellables)
 
