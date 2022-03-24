@@ -17,10 +17,8 @@ extension URLSession {
     func jsonDecoder<T: Decodable>(for url: URL) -> AnyPublisher<T, Error> {
         self.dataTaskPublisher(for: url)
             .tryMap { data, response -> Data in
-                if let response = response as? HTTPURLResponse,
-                   (200..<300).contains(response.statusCode) == false {
-                    print(response.statusCode)
-                    throw SessionError.statusCode(response)
+                if let error = self.checkResponse(response) {
+                    throw error
                 }
                 return data
             }
@@ -28,35 +26,18 @@ extension URLSession {
             .eraseToAnyPublisher()
     }
     
-    func downloadImagePublisher(for url: URL) -> AnyPublisher<UIImage?, Error> {
+    func downloadImagePublisher(for url: URL) -> AnyPublisher<UIImage?, Never> {
         self.dataTaskPublisher(for: url)
-            .tryMap { data, response -> Data in
-                if let response = response as? HTTPURLResponse,
-                   (200..<300).contains(response.statusCode) == false {
-                    throw SessionError.statusCode(response)
-                }
-                return data
-            }
-            .map { data -> UIImage? in
-                guard let image = UIImage(data: data) else {
-                    return nil
-                }
-                return image
-            }
+            .map { data, _ in UIImage(data: data)}
+            .replaceError(with: nil)
             .eraseToAnyPublisher()
     }
     
-    func downloadImage(for url: URL, completion: @escaping (UIImage?) -> Void) {
-        self.dataTask(with: url) { data, response, error in
-            if let response = response as? HTTPURLResponse,
-               (200..<300).contains(response.statusCode) == false {
-                return
-            }
-            guard let data = data,
-                  let image = UIImage(data: data) else {
-                return
-            }
-            completion(image)
-        }.resume()
+    private func checkResponse(_ response: URLResponse?) -> Error? {
+        if let response = response as? HTTPURLResponse,
+           (200..<300).contains(response.statusCode) == false {
+            return SessionError.statusCode(response)
+        }
+        return nil
     }
 }

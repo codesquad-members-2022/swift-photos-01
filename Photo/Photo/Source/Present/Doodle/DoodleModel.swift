@@ -57,13 +57,14 @@ class DoodleModel {
                 return true
             }
             .sink { index, doodle in
-                URLSession.shared.downloadImage(for: doodle.imageUrl) { image in
-                    guard let image = image else {
-                        return
-                    }
-                    self.state.loadedImage.send((index, image))
-                    self.imageCache.setObject(image, forKey: doodle.title as NSString)
-                }
+                URLSession.shared.downloadImagePublisher(for: doodle.imageUrl)
+                    .sink { image in
+                        guard let image = image else {
+                            return
+                        }
+                        self.state.loadedImage.send((index, image))
+                        self.imageCache.setObject(image, forKey: doodle.title as NSString)
+                    }.store(in: &self.cancellables)
             }.store(in: &cancellables)
         
         action.saveImage
