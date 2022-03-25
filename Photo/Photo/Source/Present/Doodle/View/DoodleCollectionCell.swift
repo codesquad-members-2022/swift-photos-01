@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-protocol DoodleCollectionCellDelegate {
+protocol DoodleCollectionCellDelegate: AnyObject {
     func save(_ cell: DoodleCollectionCell)
 }
 
@@ -23,7 +23,7 @@ class DoodleCollectionCell: UICollectionViewCell {
         true
     }
     
-    var delegate: DoodleCollectionCellDelegate?
+    weak var delegate: DoodleCollectionCellDelegate?
     
     override init(frame: CGRect) {
         super.init(frame: frame)

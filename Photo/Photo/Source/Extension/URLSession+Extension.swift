@@ -10,7 +10,7 @@ import Combine
 import UIKit
 
 extension URLSession {
-    enum SessionError: Error {
+    enum ResponseError: Error {
         case statusCode(HTTPURLResponse)
     }
     
@@ -33,10 +33,10 @@ extension URLSession {
             .eraseToAnyPublisher()
     }
     
-    private func checkResponse(_ response: URLResponse?) -> Error? {
+    private func checkResponse(_ response: URLResponse?) -> ResponseError? {
         if let response = response as? HTTPURLResponse,
            (200..<300).contains(response.statusCode) == false {
-            return SessionError.statusCode(response)
+            return ResponseError.statusCode(response)
         }
         return nil
     }

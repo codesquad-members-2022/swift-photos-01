@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		E006B2A827EC725300EF8E73 /* Bundle+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = E006B2A727EC725300EF8E73 /* Bundle+Extension.swift */; };
+		E006B2AD27ED4B1D00EF8E73 /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = E006B2AC27ED4B1D00EF8E73 /* Log.swift */; };
 		E0E21F1527E80E5F00FDA449 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0E21F1427E80E5F00FDA449 /* AppDelegate.swift */; };
 		E0E21F1727E80E5F00FDA449 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0E21F1627E80E5F00FDA449 /* SceneDelegate.swift */; };
 		E0E21F1927E80E5F00FDA449 /* PhotosViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0E21F1827E80E5F00FDA449 /* PhotosViewController.swift */; };
@@ -30,6 +31,7 @@
 
 /* Begin PBXFileReference section */
 		E006B2A727EC725300EF8E73 /* Bundle+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Bundle+Extension.swift"; sourceTree = "<group>"; };
+		E006B2AC27ED4B1D00EF8E73 /* Log.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Log.swift; sourceTree = "<group>"; };
 		E0E21F1127E80E5F00FDA449 /* Photo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Photo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E0E21F1427E80E5F00FDA449 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		E0E21F1627E80E5F00FDA449 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -63,6 +65,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		E006B2AB27ED4B1D00EF8E73 /* Log */ = {
+			isa = PBXGroup;
+			children = (
+				E006B2AC27ED4B1D00EF8E73 /* Log.swift */,
+			);
+			path = Log;
+			sourceTree = "<group>";
+		};
 		E0E21F0827E80E5F00FDA449 = {
 			isa = PBXGroup;
 			children = (
@@ -161,6 +171,7 @@
 		E0E21F3A27E9661300FDA449 /* Common */ = {
 			isa = PBXGroup;
 			children = (
+				E006B2AB27ED4B1D00EF8E73 /* Log */,
 				E0FA8C0127EC54AD000E6A44 /* JsonParser */,
 				E0FA8BFE27EC36ED000E6A44 /* PHPhoto */,
 				E0E21F5027EAB9EF00FDA449 /* Toast */,
@@ -304,6 +315,7 @@
 				E0E21F1927E80E5F00FDA449 /* PhotosViewController.swift in Sources */,
 				E0E21F3927E963E500FDA449 /* PhotosCollectionCell.swift in Sources */,
 				E0FA8C0527EC57D9000E6A44 /* URLSession+Extension.swift in Sources */,
+				E006B2AD27ED4B1D00EF8E73 /* Log.swift in Sources */,
 				E0E21F3227E8786400FDA449 /* Color+Exteionsoin.swift in Sources */,
 				E0E21F1527E80E5F00FDA449 /* AppDelegate.swift in Sources */,
 				E0FA8C0027EC3719000E6A44 /* PHPhoto.swift in Sources */,

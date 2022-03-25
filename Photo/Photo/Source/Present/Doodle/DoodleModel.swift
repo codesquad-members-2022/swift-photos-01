@@ -15,6 +15,7 @@ class DoodleModel {
         var loadJson = PassthroughSubject<Void, Never>()
         var loadImage = PassthroughSubject<Int, Never>()
         var saveImage = PassthroughSubject<Int, Never>()
+        var removeCacheData = PassthroughSubject<Void, Never>()
     }
 
     struct State {
@@ -23,7 +24,7 @@ class DoodleModel {
         var savedImage = PassthroughSubject<String, Never>()
     }
     
-    var cancellables = [AnyCancellable]()
+    var cancellables = Set<AnyCancellable>()
     let action = Action()
     let state = State()
 
@@ -35,13 +36,30 @@ class DoodleModel {
 
     init() {
         action.loadJson
-            .map{Bundle.main.decode([Doodle].self, from: "doodle.json")}
-            .sink { doodles in
-                guard let doodles = doodles else {
-                    return
+            .map { _ in
+                URLSession.shared.jsonDecoder(for: URL(string: "https://public.codesquad.kr/jk/doodle.json")!)
+            }
+            .switchToLatest()
+            .sink(receiveCompletion: { error in
+                switch error {
+                case .failure(let error):
+                    Log.error("\(error)")
+                case .finished:
+                    Log.error("finished")
                 }
+            }) { doodles in
                 self.state.loadedDoodles.send(doodles)
             }.store(in: &cancellables)
+        
+        //TODO: 프로젝트 내부의 파일을 가져올때 사용하는 코드
+//        action.loadJson
+//            .map{Bundle.main.decode([Doodle].self, from: "doodle.json")}
+//            .sink { doodles in
+//                guard let doodles = doodles else {
+//                    return
+//                }
+//                self.state.loadedDoodles.send(doodles)
+//            }.store(in: &cancellables)
         
         action.loadImage
             .combineLatest(state.loadedDoodles)

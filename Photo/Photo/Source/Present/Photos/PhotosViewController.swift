@@ -38,7 +38,7 @@ class PhotosViewController: UIViewController {
         return barButton
     }()
     
-    var cancellables = [AnyCancellable]()
+    var cancellables = Set<AnyCancellable>()
     private let photoModel = PhotoModel()
     
     override func viewDidLoad() {
@@ -79,7 +79,14 @@ class PhotosViewController: UIViewController {
                             PhotosCollectionCell else {
                                 return
                             }
-                    cell.setImage(image)                    
+                    cell.setImage(image)
+                }
+            }.store(in: &cancellables)
+        
+        photoModel.state.insertAssets
+            .sink { index, asset in
+                DispatchQueue.main.async {
+                    self.collectionView.insertItems(at: [IndexPath(item: index, section: 0)])
                 }
             }.store(in: &cancellables)
     }
@@ -115,7 +122,7 @@ class PhotosViewController: UIViewController {
 
 extension PhotosViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        self.photoModel.state.fetchedAssets.value?.count ?? 0
+        self.photoModel.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -132,6 +139,6 @@ extension PhotosViewController: UICollectionViewDataSource {
 
 extension PhotosViewController: PHPhotoLibraryChangeObserver {
     func photoLibraryDidChange(_ changeInstance: PHChange) {
-        self.photoModel.action.fetchAssets.send()
+        self.photoModel.action.changeAssets.send(changeInstance)
     }
 }

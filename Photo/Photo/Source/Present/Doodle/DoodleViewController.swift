@@ -25,8 +25,8 @@ class DoodleViewController: UICollectionViewController {
         return flowLayout
     }
     
-    var cancellables = [AnyCancellable]()
-    private let doodleModel = DoodleModel()
+    var cancellables = Set<AnyCancellable>()
+    private var doodleModel = DoodleModel()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -46,10 +46,21 @@ class DoodleViewController: UICollectionViewController {
         self.navigationController?.navigationBar.isTranslucent = false
     }
     
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        cancellables.removeAll()
+    }
+    
+    deinit {
+        self.doodleModel.cancellables.forEach{ $0.cancel()}
+    }
+    
     private func bind() {
         doodleModel.state.loadedDoodles
             .sink { _ in
-                self.collectionView.reloadData()
+                DispatchQueue.main.async {
+                    self.collectionView.reloadData()
+                }
             }.store(in: &cancellables)
 
         doodleModel.state.loadedImage
@@ -86,13 +97,14 @@ class DoodleViewController: UICollectionViewController {
     
     @objc
     private func closeButtonTapped() {
+        cancellables.forEach{ $0.cancel()}
         self.dismiss(animated: true, completion: nil)
     }
 }
 
 extension DoodleViewController {
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        self.doodleModel.count
+        self.doodleModel.count ?? 0
     }
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
