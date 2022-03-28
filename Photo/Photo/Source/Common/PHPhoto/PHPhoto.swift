@@ -45,17 +45,17 @@ class PHPhoto {
         }
     }
     
-    static func saveImage(_ image: UIImage, completion: @escaping (Result<Void, Error>)->Void) {
+    static func saveImage(_ image: UIImage, completion: ((Result<Void, Error>)->Void)? = nil) {
         PHPhotoLibrary.shared().performChanges({
             PHAssetChangeRequest.creationRequestForAsset(from: image)
         }) { isSuccess, error in
             if isSuccess {
-                completion(.success(()))
+                completion?(.success(()))
             } else {
                 guard let error = error else {
                     return
                 }
-                completion(.failure(error))
+                completion?(.failure(error))
             }
         }
         

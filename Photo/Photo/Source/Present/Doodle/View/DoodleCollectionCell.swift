@@ -8,10 +8,6 @@
 import Foundation
 import UIKit
 
-protocol DoodleCollectionCellDelegate: AnyObject {
-    func save(_ cell: DoodleCollectionCell)
-}
-
 class DoodleCollectionCell: UICollectionViewCell {
     private let imageView: UIImageView = {
         let imageView = UIImageView()
@@ -19,48 +15,14 @@ class DoodleCollectionCell: UICollectionViewCell {
         return imageView
     }()
     
-    override var canBecomeFirstResponder: Bool {
-        true
-    }
-    
-    weak var delegate: DoodleCollectionCellDelegate?
-    
     override init(frame: CGRect) {
         super.init(frame: frame)
-        bind()
         layout()
     }
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
-        bind()
         layout()
-    }
-    
-    private func bind() {
-        let longPressGestureRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(targetViewDidPress))
-        longPressGestureRecognizer.minimumPressDuration = 1
-        self.addGestureRecognizer(longPressGestureRecognizer)
-    }
-    
-    @objc
-    private func targetViewDidPress(sender: UILongPressGestureRecognizer) {
-        guard sender.state == .began,
-              let senderView = sender.view,
-              let superView = sender.view?.superview else {
-                  return
-              }
-        
-        senderView.becomeFirstResponder()
-        let saveMenuItem = UIMenuItem(title: "Save", action: #selector(SaveMenuItemTapped))
-        UIMenuController.shared.menuItems = [saveMenuItem]
-        UIMenuController.shared.showMenu(from: superView, rect: senderView.frame)
-        
-    }
-    
-    @objc
-    private func SaveMenuItemTapped() {
-        self.delegate?.save(self)
     }
     
     private func layout() {

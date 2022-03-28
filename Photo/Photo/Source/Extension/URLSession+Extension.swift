@@ -14,7 +14,7 @@ extension URLSession {
         case statusCode(HTTPURLResponse)
     }
     
-    func jsonDecoder<T: Decodable>(for url: URL) -> AnyPublisher<T, Error> {
+    func jsonDecoder<T: Decodable>(_ type: T.Type, for url: URL) -> AnyPublisher<T, Error> {
         self.dataTaskPublisher(for: url)
             .tryMap { data, response -> Data in
                 if let error = self.checkResponse(response) {
@@ -22,15 +22,20 @@ extension URLSession {
                 }
                 return data
             }
-            .decode(type: T.self, decoder: JSONDecoder())
+            .decode(type: type.self, decoder: JSONDecoder())
             .eraseToAnyPublisher()
     }
     
-    func downloadImagePublisher(for url: URL) -> AnyPublisher<UIImage?, Never> {
-        self.dataTaskPublisher(for: url)
-            .map { data, _ in UIImage(data: data)}
-            .replaceError(with: nil)
-            .eraseToAnyPublisher()
+    func downloadImages(urls: [URL], completion: @escaping (URL?) -> Void) {
+        urls.forEach {
+            downloadImage(url: $0, completion: completion)
+        }
+    }
+    
+    func downloadImage(url: URL, completion: @escaping (URL?) -> Void) {
+        URLSession.shared.downloadTask(with: url) { url, response, error in
+            completion(url)
+        }.resume()
     }
     
     private func checkResponse(_ response: URLResponse?) -> ResponseError? {

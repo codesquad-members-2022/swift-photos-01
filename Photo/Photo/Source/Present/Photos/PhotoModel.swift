@@ -13,15 +13,18 @@ import Combine
 class PhotoModel {
     
     struct Action {
-        var fetchAssets = PassthroughSubject<Void, Never>()
+        var viewDidLoad = PassthroughSubject<Void, Never>()
         var loadImage = PassthroughSubject<(Int, CGSize), Never>()
         var changeAssets = PassthroughSubject<PHChange, Never>()
+        var selectedImages = PassthroughSubject<[Int], Never>()
+        var makeVideo = PassthroughSubject<[Int], Never>()
     }
     
     struct State {
-        var fetchedAssets = PassthroughSubject<Void, Never>()
+        var collectionReloadData = PassthroughSubject<Void, Never>()
         var loadedImage = PassthroughSubject<(Int, UIImage?), Never>()
-        var insertAssets = PassthroughSubject<(Int, PHAsset), Never>()
+        var insertAssets = PassthroughSubject<Int, Never>()
+        var doneButtonEnabled = PassthroughSubject<Bool, Never>()
     }
     
     var cancellables = Set<AnyCancellable>()
@@ -35,12 +38,12 @@ class PhotoModel {
     }
     
     init() {
-        action.fetchAssets
-            .sink { _ in
+        action.viewDidLoad
+            .sink {
                 self.featchResult = PHPhoto.fetchAsset()
-                self.state.fetchedAssets.send()
-            }
-            .store(in: &cancellables)
+                self.state.collectionReloadData.send()
+                self.state.doneButtonEnabled.send(false)
+            }.store(in: &cancellables)
         
         action.loadImage
             .sink { index, size in
@@ -69,8 +72,18 @@ class PhotoModel {
                 self.featchResult = changes.fetchResultAfterChanges
                 
                 changes.insertedObjects.forEach { asset in
-                    self.state.insertAssets.send((changes.fetchResultAfterChanges.count - 1, asset))
+                    self.state.insertAssets.send((changes.fetchResultAfterChanges.count - 1))
                 }
+            }.store(in: &cancellables)
+        
+        action.selectedImages
+            .map { $0.count >= 3 }
+            .sink(receiveValue: self.state.doneButtonEnabled.send(_:))
+            .store(in: &cancellables)
+        
+        action.makeVideo
+            .sink {
+              print($0)
             }.store(in: &cancellables)
     }
 }

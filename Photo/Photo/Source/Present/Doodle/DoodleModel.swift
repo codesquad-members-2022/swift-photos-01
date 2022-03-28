@@ -14,30 +14,37 @@ class DoodleModel {
     struct Action {
         var loadJson = PassthroughSubject<Void, Never>()
         var loadImage = PassthroughSubject<Int, Never>()
-        var saveImage = PassthroughSubject<Int, Never>()
-        var removeCacheData = PassthroughSubject<Void, Never>()
+        var saveImage = PassthroughSubject<Void, Never>()
+        let selectIndex = PassthroughSubject<Int, Never>()
     }
 
     struct State {
-        var loadedDoodles = CurrentValueSubject<[Doodle], Never>([])
-        var loadedImage = PassthroughSubject<(Int, UIImage?), Never>()
+        var loadedDoodles = PassthroughSubject<Void, Never>()
+        var loadedImage = PassthroughSubject<Int, Never>()
         var savedImage = PassthroughSubject<String, Never>()
     }
     
     var cancellables = Set<AnyCancellable>()
     let action = Action()
     let state = State()
-
-    private var imageCache = NSCache<NSString, UIImage>()
+    
+    private var doodles: [Doodle] = []
 
     var count: Int {
-        return state.loadedDoodles.value.count
+        return doodles.count
+    }
+    
+    subscript(index: Int) -> URL? {
+        guard let cachesDirectory = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first else {
+            return nil
+        }
+        return cachesDirectory.appendingPathComponent(doodles[index].title)
     }
 
     init() {
         action.loadJson
             .map { _ in
-                URLSession.shared.jsonDecoder(for: URL(string: "https://public.codesquad.kr/jk/doodle.json")!)
+                URLSession.shared.jsonDecoder([Doodle].self, for: URL(string: "https://public.codesquad.kr/jk/doodle.json")!)
             }
             .switchToLatest()
             .sink(receiveCompletion: { error in
@@ -48,58 +55,51 @@ class DoodleModel {
                     Log.error("finished")
                 }
             }) { doodles in
-                self.state.loadedDoodles.send(doodles)
+                self.doodles = doodles
+                self.state.loadedDoodles.send()
+                self.cacheImage(doodles: doodles)
             }.store(in: &cancellables)
         
         //TODO: 프로젝트 내부의 파일을 가져올때 사용하는 코드
 //        action.loadJson
-//            .map{Bundle.main.decode([Doodle].self, from: "doodle.json")}
 //            .sink { doodles in
-//                guard let doodles = doodles else {
-//                    return
-//                }
+//                guard let url = Bundle.main.url(forResource: "doodle.json", withExtension: nil),
+//                      let data = try? Data(contentsOf: url),
+//                      let doodles = data.decode([Doodle].self) else {
+//                          return
+//                      }
 //                self.state.loadedDoodles.send(doodles)
 //            }.store(in: &cancellables)
         
-        action.loadImage
-            .combineLatest(state.loadedDoodles)
-            .map { index, doodles in
-                (index, doodles[index])
-            }
-            .filter { index, doodle in
-                if let cacheImage = self.imageCache.object(forKey: doodle.title as NSString) {
-                    self.state.loadedImage.send((index, cacheImage))
-                    return false
-                }
-                return true
-            }
-            .sink { index, doodle in
-                URLSession.shared.downloadImagePublisher(for: doodle.imageUrl)
-                    .sink { image in
-                        guard let image = image else {
-                            return
-                        }
-                        self.state.loadedImage.send((index, image))
-                        self.imageCache.setObject(image, forKey: doodle.title as NSString)
-                    }.store(in: &self.cancellables)
-            }.store(in: &cancellables)
-        
         action.saveImage
-            .combineLatest(state.loadedDoodles)
-            .sink { index, doodles in
-                let doodle = doodles[index]
-                guard let image = self.imageCache.object(forKey: doodle.title as NSString) else {
+            .combineLatest(self.action.selectIndex)
+            .sink { _, index in
+                URLSession.shared.downloadImage(url: self.doodles[index].imageUrl) { tempUrl in
+                    guard let url = tempUrl,
+                          let data = try? Data(contentsOf: url),
+                          let image = UIImage(data: data) else {
+                        return
+                    }
+                    PHPhoto.saveImage(image, completion: nil)
+                }
+            }.store(in: &cancellables)
+    }
+    
+    private func cacheImage(doodles: [Doodle]) {
+        doodles.enumerated().forEach { index, doodle in
+            URLSession.shared.downloadImage(url: doodle.imageUrl) { tempUrl in
+                guard let url = tempUrl,
+                      let cachesDirectory = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first else {
                     return
                 }
-            
-                PHPhoto.saveImage(image) { result in
-                    switch result {
-                    case .success(()):
-                        self.state.savedImage.send("이미지를 저장했습니다")
-                    case .failure(let error):
-                        break
-                    }
+                let destination = cachesDirectory.appendingPathComponent(doodle.title)
+                
+                if FileManager.default.fileExists(atPath: destination.path) {
+                    try? FileManager.default.removeItem(at: destination)
                 }
-            }.store(in: &cancellables)
+                try? FileManager.default.copyItem(at: url, to: destination)
+                self.state.loadedImage.send(index)
+            }
+        }
     }
 }

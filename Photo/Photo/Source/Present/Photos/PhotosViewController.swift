@@ -26,6 +26,7 @@ class PhotosViewController: UIViewController {
         
         let collection = UICollectionView(frame: .zero, collectionViewLayout: flowLayout)
         collection.translatesAutoresizingMaskIntoConstraints = false
+        collection.allowsMultipleSelection = true
         collection.register(PhotosCollectionCell.self, forCellWithReuseIdentifier: Constants.cellIdentifier)
         return collection
     }()
@@ -35,6 +36,16 @@ class PhotosViewController: UIViewController {
         barButton.setTitle("+", for: .normal)
         barButton.setTitleColor(.systemBlue, for: .normal)
         barButton.titleLabel?.font = .systemFont(ofSize: 20)
+        return barButton
+    }()
+    
+    let navigationBarDone: UIButton = {
+        let barButton = UIButton()
+        barButton.setTitle("Done", for: .normal)
+        barButton.setTitleColor(.systemBlue, for: .normal)
+        barButton.setTitleColor(.systemGray4, for: .disabled)
+        barButton.titleLabel?.font = .systemFont(ofSize: 20)
+        barButton.isEnabled = false
         return barButton
     }()
     
@@ -51,7 +62,7 @@ class PhotosViewController: UIViewController {
             switch result {
             case .success(()):
                 PHPhotoLibrary.shared().register(self)
-                self.photoModel.action.fetchAssets.send()
+                self.photoModel.action.viewDidLoad.send()
             case .failure(let error):
                 exit(0)
             }
@@ -59,14 +70,11 @@ class PhotosViewController: UIViewController {
     }
     
     private func bind() {
-        photoBind()
-        navigationBind()
         collectionView.dataSource = self
-    }
-    
-    private func photoBind() {
-        photoModel.state.fetchedAssets
-            .sink { _ in
+        collectionView.delegate = self
+        
+        photoModel.state.collectionReloadData
+            .sink {
                 DispatchQueue.main.async {
                     self.collectionView.reloadData()
                 }
@@ -84,14 +92,19 @@ class PhotosViewController: UIViewController {
             }.store(in: &cancellables)
         
         photoModel.state.insertAssets
-            .sink { index, asset in
+            .sink { index in
                 DispatchQueue.main.async {
                     self.collectionView.insertItems(at: [IndexPath(item: index, section: 0)])
                 }
             }.store(in: &cancellables)
-    }
-    
-    private func navigationBind() {
+        
+        photoModel.state.doneButtonEnabled
+            .sink { isEnabled in
+                DispatchQueue.main.async {
+                    self.navigationBarDone.isEnabled = isEnabled
+                }
+            }.store(in: &cancellables)
+        
         navigationBarAdd.addAction(UIAction{ _ in
             let doodleViewController = DoodleViewController(collectionViewLayout: DoodleViewController.flowLayout)
             let rootViewcontroller = UINavigationController(rootViewController: doodleViewController)
@@ -99,6 +112,12 @@ class PhotosViewController: UIViewController {
             self.navigationController?.present(rootViewcontroller, animated: true)
         }, for: .touchUpInside)
         
+        navigationBarDone.addAction(UIAction { _ in
+            guard let selectedItems = self.collectionView.indexPathsForSelectedItems else {
+                return
+            }
+            self.photoModel.action.makeVideo.send(selectedItems.map{ $0.item })
+        }, for: .touchUpInside)
     }
     
     private func attribute() {
@@ -106,6 +125,7 @@ class PhotosViewController: UIViewController {
         self.view.backgroundColor = .white
         
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(customView: self.navigationBarAdd)
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: self.navigationBarDone)
     }
     
     private func layout() {
@@ -120,6 +140,29 @@ class PhotosViewController: UIViewController {
     }
 }
 
+extension PhotosViewController: UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        guard let cell = collectionView.cellForItem(at: indexPath) as? PhotosCollectionCell else {
+            return
+        }
+        cell.isSelected = true
+        sendSelectedItems(collectionView: collectionView)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
+        guard let cell = collectionView.cellForItem(at: indexPath) as? PhotosCollectionCell else {
+            return
+        }
+        cell.isSelected = false
+        sendSelectedItems(collectionView: collectionView)
+    }
+    
+    private func sendSelectedItems(collectionView: UICollectionView) {
+        let selectedItems = collectionView.indexPathsForSelectedItems?.compactMap{ $0.item }
+        self.photoModel.action.selectedImages.send(selectedItems ?? [])
+    }
+}
+
 extension PhotosViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         self.photoModel.count
@@ -129,8 +172,6 @@ extension PhotosViewController: UICollectionViewDataSource {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: Constants.cellIdentifier, for: indexPath) as? PhotosCollectionCell else {
             return UICollectionViewCell()
         }
-
-        cell.backgroundColor = .random
         cell.setImage(nil)
         self.photoModel.action.loadImage.send((indexPath.item, Constants.collectionCellSize))
         return cell
@@ -140,5 +181,11 @@ extension PhotosViewController: UICollectionViewDataSource {
 extension PhotosViewController: PHPhotoLibraryChangeObserver {
     func photoLibraryDidChange(_ changeInstance: PHChange) {
         self.photoModel.action.changeAssets.send(changeInstance)
+    }
+}
+
+extension PhotosViewController: URLSessionDownloadDelegate {
+    func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL) {
+        
     }
 }
